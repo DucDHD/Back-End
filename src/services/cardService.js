@@ -1,5 +1,5 @@
 import { cardModel } from '~/models/cardModel'
-import { columnModel } from '~/models/columnModel'
+import { columnModel } from '~/models/ColumnModel'
 
 const createNew = async (reqBody) => {
   try {
