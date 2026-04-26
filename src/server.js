@@ -25,10 +25,18 @@ const START_SERVER = () => {
   // middleware centralized error handling
   app.use(errorHandlingMiddleware)
 
-  app.listen(env.APP_PORT, env.APP_HOST, () => {
-    // eslint-disable-next-line no-console
-    console.log(`3. I am ${env.AUTHOR} Back-end Server is running success at http://${ env.APP_HOST }:${ env.APP_PORT }/`)
-  })
+  if (env.BUILD_MODE === 'production') {
+    app.listen(process.env.Port, () => {
+      // eslint-disable-next-line no-console
+      console.log(`3. Production:  I am ${env.AUTHOR} Back-end Server is running success at ${ process.env.Port }/`)
+    })
+  } else {
+    app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
+      // eslint-disable-next-line no-console
+      console.log(`3. Local Dev: I am ${env.AUTHOR} Back-end Server is running success at http://${ env.LOCAL_DEV_APP_HOST }:${ env.LOCAL_DEV_APP_PORT }/`)
+    })
+  }
+
 
   exitHook(async () => {
     console.log('4. Disconnecting to MongoDB Clout Atlas')
