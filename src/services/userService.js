@@ -6,6 +6,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { pickUser } from '~/utils/formatters'
 import { WEBSITE_DOMAIN } from '~/utils/constants'
 import { BrevoProvider } from '~/providers/BrevoProvider'
+import { JwtProvider } from '~/providers/JwtProvider'
+import { env } from '~/config/environment'
 
 const createNew = async (reqBody) => {
   try {
@@ -44,6 +46,56 @@ const createNew = async (reqBody) => {
   } catch (error) { throw error }
 }
 
+const verifyAccount = async (reqBody) => {
+  try {
+    const existsUser = await userModel.findOneByEmail(reqBody.email)
+    if (!existsUser) throw new ApiError(StatusCodes.NOT_FOUND, 'Account not Found!')
+    if (existsUser.isActive) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'your account is already active!')
+    if (reqBody.token !== existsUser.verifyToken) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Token is invalid')
+
+    const updateData = {
+      isActive: true,
+      verifyToken: null
+    }
+    const updatedUser = await userModel.update(existsUser._id, updateData)
+
+    return pickUser(updatedUser)
+  } catch (error) { throw error }
+}
+
+const login = async (reqBody) => {
+  try {
+    const existsUser = await userModel.findOneByEmail(reqBody.email)
+
+    if (!existsUser) throw new ApiError(StatusCodes.NOT_FOUND, 'Account not Found!')
+    if (!existsUser.isActive) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'your account not active!')
+
+    if (!bcryptjs.compareSync(reqBody.password, existsUser.password)) {
+      throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'your email or password is incorrect!')
+    }
+
+    const userInfo = { _id: existsUser._id, email: existsUser.email }
+
+    const access_token = await JwtProvider.generateToken(
+      userInfo,
+      env.ACCESS_TOKEN_SECRET_SIGNATURE,
+      env.ACCESS_TOKEN_LIFE
+    )
+
+    const refresh_token = await JwtProvider.generateToken(
+      userInfo,
+      env.REFRESH_TOKEN_SECRET_SIGNATURE,
+      env.REFRESH_TOKEN_LIFE
+    )
+
+    return { access_token, refresh_token, ...pickUser(existsUser) }
+
+  } catch (error) { throw error }
+}
+
+
 export const userService = {
-  createNew
+  createNew,
+  verifyAccount,
+  login
 }
