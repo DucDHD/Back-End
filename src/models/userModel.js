@@ -57,7 +57,6 @@ const findOneByEmail = async (emailValue) => {
 
 const update = async (userId, updateData) => {
   try {
-    // Lọc những  field mà chúng ta không cho phép cập nhập linh tinh
     Object.keys(updateData).forEach(fieldName => {
       if (INVALID_UPDATE_FIELDS.includes(fieldName)) {
         delete updateData[fieldName]
