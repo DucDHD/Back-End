@@ -76,19 +76,20 @@ const login = async (reqBody) => {
 
     const userInfo = { _id: existsUser._id, email: existsUser.email }
 
-    const access_token = await JwtProvider.generateToken(
+    const accessToken = await JwtProvider.generateToken(
       userInfo,
       env.ACCESS_TOKEN_SECRET_SIGNATURE,
       env.ACCESS_TOKEN_LIFE
+      //5
     )
 
-    const refresh_token = await JwtProvider.generateToken(
+    const refreshToken = await JwtProvider.generateToken(
       userInfo,
       env.REFRESH_TOKEN_SECRET_SIGNATURE,
       env.REFRESH_TOKEN_LIFE
     )
 
-    return { access_token, refresh_token, ...pickUser(existsUser) }
+    return { accessToken, refreshToken, ...pickUser(existsUser) }
 
   } catch (error) { throw error }
 }
