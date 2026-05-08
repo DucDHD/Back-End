@@ -39,8 +39,10 @@ const createNew = async (reqBody) => {
       <h3> ${verificationLink} </h3>
       <h3> Sincerely, </br> - DucDH</h3>
     `
+    console.log('Dưới Đây')
 
     await BrevoProvider.sendEmail(getNewUser.email, customSubject, htmlContent)
+    console.log('Vào Send email')
 
     return pickUser(getNewUser)
   } catch (error) { throw error }
