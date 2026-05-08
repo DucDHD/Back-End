@@ -33,6 +33,7 @@ const createNew = async (reqBody) => {
     const getNewUser = await userModel.findOneById(createdUser.insertedId)
     // send email
     const verificationLink = `${WEBSITE_DOMAIN}/account/verification?email=${getNewUser.email}&token=${getNewUser.verifyToken}`
+    console.log('WEBSITE_DOMAIN', WEBSITE_DOMAIN)
     const customSubject = 'Please verify your email before using our services'
     const htmlContent = `
       <h3> here is your verification link:  </h3>
