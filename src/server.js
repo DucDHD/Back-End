@@ -9,9 +9,19 @@ import cors from 'cors'
 import { corsOptions } from '~/config/cors'
 import cookieParser from 'cookie-parser'
 
+import https from 'https'
+
 const START_SERVER = () => {
 
   const app = express()
+
+  app.get('/debug-ip', async (req, res) => {
+    https.get('https://api.ipify.org', (r) => {
+      let data = ''
+      r.on('data', chunk => data += chunk)
+      r.on('end', () => res.send(data))
+    })
+  })
 
   app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store')
