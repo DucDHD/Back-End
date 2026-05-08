@@ -40,6 +40,7 @@ const createNew = async (reqBody) => {
       <h3> Sincerely, </br> - DucDH</h3>
     `
     console.log('Dưới Đây')
+    console.log('Check Key:', env.BREVO_API_KEY)
 
     await BrevoProvider.sendEmail(getNewUser.email, customSubject, htmlContent)
     console.log('Vào Send email')
