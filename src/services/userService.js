@@ -77,15 +77,15 @@ const login = async (reqBody) => {
     const accessToken = await JwtProvider.generateToken(
       userInfo,
       env.ACCESS_TOKEN_SECRET_SIGNATURE,
-      //env.ACCESS_TOKEN_LIFE
-      5
+      env.ACCESS_TOKEN_LIFE
+      //5
     )
 
     const refreshToken = await JwtProvider.generateToken(
       userInfo,
       env.REFRESH_TOKEN_SECRET_SIGNATURE,
-      //env.REFRESH_TOKEN_LIFE
-      15
+      env.REFRESH_TOKEN_LIFE
+      //15
     )
 
     return { accessToken, refreshToken, ...pickUser(existsUser) }
@@ -104,8 +104,8 @@ const refreshToken = async(clientRefreshToken) => {
     const accessToken = await JwtProvider.generateToken(
       userInfo,
       env.ACCESS_TOKEN_SECRET_SIGNATURE,
-      //env.ACCESS_TOKEN_LIFE
-      5
+      env.ACCESS_TOKEN_LIFE
+      //5
     )
     return { accessToken }
   } catch (error) { throw error }
